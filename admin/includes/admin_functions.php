@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Admin user variables 管理員用戶變量
 $admin_id = 0;
 $isEditingUser = false;
@@ -43,7 +43,9 @@ if (isset($_GET['delete-admin'])) {
    主題動作
 - - - - - - - - - - -*/
 // if user clicks the create topic button 如果用戶單擊創建主題按鈕
-if (isset($_POST['create_topic'])) { createTopic($_POST); }
+if (isset($_POST['create_topic'])) {
+	createTopic($_POST);
+}
 // if user clicks the Edit topic button 如果用戶單擊“編輯主題”按鈕
 if (isset($_GET['edit-topic'])) {
 	$isEditingTopic = true;
@@ -70,23 +72,34 @@ if (isset($_GET['delete-topic'])) {
 * - Create new admin user 創建新的管理員用戶
 * - Returns all admin users with their roles 返回所有管理員用戶及其角色
 * * * * * * * * * * * * * * * * * * * * * * */
-function createAdmin($request_values){
+function createAdmin($request_values)
+{
 	global $conn, $errors, $role, $username, $email;
 	$username = esc($request_values['username']);
 	$email = esc($request_values['email']);
 	$password = esc($request_values['password']);
 	$passwordConfirmation = esc($request_values['passwordConfirmation']);
 
-	if(isset($request_values['role'])){
+	if (isset($request_values['role'])) {
 		$role = esc($request_values['role']);
 	}
 	// form validation: ensure that the form is correctly filled
-    // 表單驗證：確保正確填寫表單
-	if (empty($username)) { array_push($errors, "Uhmm...We gonna need the username"); }
-	if (empty($email)) { array_push($errors, "Oops.. Email is missing"); }
-	if (empty($role)) { array_push($errors, "Role is required for admin users");}
-	if (empty($password)) { array_push($errors, "uh-oh you forgot the password"); }
-	if ($password != $passwordConfirmation) { array_push($errors, "The two passwords do not match"); }
+	// 表單驗證：確保正確填寫表單
+	if (empty($username)) {
+		array_push($errors, "Uhmm...We gonna need the username");
+	}
+	if (empty($email)) {
+		array_push($errors, "Oops.. Email is missing");
+	}
+	if (empty($role)) {
+		array_push($errors, "Role is required for admin users");
+	}
+	if (empty($password)) {
+		array_push($errors, "uh-oh you forgot the password");
+	}
+	if ($password != $passwordConfirmation) {
+		array_push($errors, "The two passwords do not match");
+	}
 	// Ensure that no user is registered twice. 確保沒有用戶註冊兩次
 	// the email and usernames should be unique 電子郵件和用戶名應該唯一
 	$user_check_query = "SELECT * FROM users WHERE username='$username' 
@@ -95,18 +108,18 @@ function createAdmin($request_values){
 	$user = mysqli_fetch_assoc($result);
 	if ($user) { // if user exists 如果用戶存在
 		if ($user['username'] === $username) {
-		  array_push($errors, "Username already exists");
+			array_push($errors, "Username already exists");
 		}
 
 		if ($user['email'] === $email) {
-		  array_push($errors, "Email already exists");
+			array_push($errors, "Email already exists");
 		}
 	}
 	// register user if there are no errors in the form 
-    // 如果表格中沒有錯誤，請註冊用戶
+	// 如果表格中沒有錯誤，請註冊用戶
 	if (count($errors) == 0) {
-		$password = md5($password);//encrypt the password before saving in the database
-                                   //保存在數據庫中之前先對密碼進行加密
+		$password = md5($password); //encrypt the password before saving in the database
+		//保存在數據庫中之前先對密碼進行加密
 		$query = "INSERT INTO users (username, email, role, password, created_at, updated_at) 
 				  VALUES('$username', '$email', '$role', '$password', now(), now())";
 		mysqli_query($conn, $query);
@@ -130,7 +143,7 @@ function editAdmin($admin_id)
 	$admin = mysqli_fetch_assoc($result);
 
 	// set form values ($username and $email) on the form to be updated
-    // 在要更新的表單上設置表單值（$ username和$ email）
+	// 在要更新的表單上設置表單值（$ username和$ email）
 	$username = $admin['username'];
 	$email = $admin['email'];
 }
@@ -139,7 +152,8 @@ function editAdmin($admin_id)
 * - Receives admin request from form and updates in database
 * - 從表單接收管理請求並在數據庫中更新
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-function updateAdmin($request_values){
+function updateAdmin($request_values)
+{
 	global $conn, $errors, $role, $username, $isEditingUser, $admin_id, $email;
 	// get id of the admin to be updated 獲取要更新的管理員的ID
 	$admin_id = $request_values['admin_id'];
@@ -151,14 +165,14 @@ function updateAdmin($request_values){
 	$email = esc($request_values['email']);
 	$password = esc($request_values['password']);
 	$passwordConfirmation = esc($request_values['passwordConfirmation']);
-	if(isset($request_values['role'])){
+	if (isset($request_values['role'])) {
 		$role = $request_values['role'];
 	}
 	// register user if there are no errors in the form 
-    //如果表格中沒有錯誤，請註冊用戶
+	//如果表格中沒有錯誤，請註冊用戶
 	if (count($errors) == 0) {
 		//encrypt the password (security purposes)
-        //加密密碼（出於安全目的）
+		//加密密碼（出於安全目的）
 		$password = md5($password);
 
 		$query = "UPDATE users SET username='$username', email='$email', role='$role', password='$password' WHERE id=$admin_id";
@@ -170,7 +184,8 @@ function updateAdmin($request_values){
 	}
 }
 // delete admin user 刪除管理員用戶
-function deleteAdmin($admin_id) {
+function deleteAdmin($admin_id)
+{
 	global $conn;
 	$sql = "DELETE FROM users WHERE id=$admin_id";
 	if (mysqli_query($conn, $sql)) {
@@ -187,22 +202,24 @@ function deleteAdmin($admin_id) {
 -  Topics functions 主題功能
 - - - - - - - - - - -*/
 // get all topics from DB 從數據庫獲取所有主題
-function getAllTopics() {
+function getAllTopics()
+{
 	global $conn;
 	$sql = "SELECT * FROM topics";
 	$result = mysqli_query($conn, $sql);
 	$topics = mysqli_fetch_all($result, MYSQLI_ASSOC);
 	return $topics;
 }
-function createTopic($request_values){
+function createTopic($request_values)
+{
 	global $conn, $errors, $topic_name;
 	$topic_name = esc($request_values['topic_name']);
 	// create slug: if topic is "Life Advice", return "life-advice" as slug
-    // 創建子彈：如果主題為“生活建議”，則以“子彈”形式返回“生活建議”
+	// 創建子彈：如果主題為“生活建議”，則以“子彈”形式返回“生活建議”
 	$topic_slug = makeSlug($topic_name);
 	// validate form 驗證表格
-	if (empty($topic_name)) { 
-		array_push($errors, "Topic name required"); 
+	if (empty($topic_name)) {
+		array_push($errors, "Topic name required");
 	}
 	// Ensure that no topic is saved twice. 確保沒有主題被保存兩次
 	$topic_check_query = "SELECT * FROM topics WHERE slug='$topic_slug' LIMIT 1";
@@ -211,7 +228,7 @@ function createTopic($request_values){
 		array_push($errors, "Topic already exists");
 	}
 	// register topic if there are no errors in the form
-    // 如果表格中沒有錯誤，請註冊主題
+	// 如果表格中沒有錯誤，請註冊主題
 	if (count($errors) == 0) {
 		$query = "INSERT INTO topics (name, slug) 
 				  VALUES('$topic_name', '$topic_slug')";
@@ -227,28 +244,30 @@ function createTopic($request_values){
 * - Fetches the topic from database       從數據庫中獲取主題
 * - sets topic fields on form for editing 在表單上設置主題字段以進行編輯
 * * * * * * * * * * * * * * * * * * * * * */
-function editTopic($topic_id) {
+function editTopic($topic_id)
+{
 	global $conn, $topic_name, $isEditingTopic, $topic_id;
 	$sql = "SELECT * FROM topics WHERE id=$topic_id LIMIT 1";
 	$result = mysqli_query($conn, $sql);
 	$topic = mysqli_fetch_assoc($result);
 	// set form values ($topic_name) on the form to be updated
-    // 在要更新的表單上設置表單值（$ topic_name）
+	// 在要更新的表單上設置表單值（$ topic_name）
 	$topic_name = $topic['name'];
 }
-function updateTopic($request_values) {
+function updateTopic($request_values)
+{
 	global $conn, $errors, $topic_name, $topic_id;
 	$topic_name = esc($request_values['topic_name']);
 	$topic_id = esc($request_values['topic_id']);
 	// create slug: if topic is "Life Advice", return "life-advice" as slug
-    // 創建子彈：如果主題為“生活建議”，則以“子彈”形式返回“生活建議”
+	// 創建子彈：如果主題為“生活建議”，則以“子彈”形式返回“生活建議”
 	$topic_slug = makeSlug($topic_name);
 	// validate form 驗證表格
-	if (empty($topic_name)) { 
-		array_push($errors, "Topic name required"); 
+	if (empty($topic_name)) {
+		array_push($errors, "Topic name required");
 	}
 	// register topic if there are no errors in the form
-    // 如果表格中沒有錯誤，請註冊主題
+	// 如果表格中沒有錯誤，請註冊主題
 	if (count($errors) == 0) {
 		$query = "UPDATE topics SET name='$topic_name', slug='$topic_slug' WHERE id=$topic_id";
 		mysqli_query($conn, $query);
@@ -259,7 +278,8 @@ function updateTopic($request_values) {
 	}
 }
 // delete topic 刪除主題
-function deleteTopic($topic_id) {
+function deleteTopic($topic_id)
+{
 	global $conn;
 	$sql = "DELETE FROM topics WHERE id=$topic_id";
 	if (mysqli_query($conn, $sql)) {
@@ -278,7 +298,8 @@ function deleteTopic($topic_id) {
 * - Returns all admin users and their corresponding roles
 *   返回所有管理員用戶及其相應角色
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-function getAdminUsers(){
+function getAdminUsers()
+{
 	global $conn, $roles;
 	$sql = "SELECT * FROM users WHERE role IS NOT NULL";
 	$result = mysqli_query($conn, $sql);
@@ -290,13 +311,14 @@ function getAdminUsers(){
 * - Escapes form submitted value, hence, preventing SQL injection
 *   轉義表單提交的值，從而防止SQL注入
 * * * * * * * * * * * * * * * * * * * * * */
-function esc(String $value){
+function esc(String $value)
+{
 	// bring the global db connect object into function
-    // 使全局數據庫連接對像生效
+	// 使全局數據庫連接對像生效
 	global $conn;
 	// remove empty space sorrounding string
-    // 刪除空格周圍的字符串
-	$val = trim($value); 
+	// 刪除空格周圍的字符串
+	$val = trim($value);
 	$val = mysqli_real_escape_string($conn, $value);
 	return $val;
 }
@@ -304,9 +326,9 @@ function esc(String $value){
 // 接收類似“ Some Sample String”的字符串
 // and returns 'some-sample-string'
 // 並返回“ some-sample-string”
-function makeSlug(String $string){
+function makeSlug(String $string)
+{
 	$string = strtolower($string);
 	$slug = preg_replace('/[^A-Za-z0-9-]+/', '-', $string);
 	return $slug;
 }
-?>

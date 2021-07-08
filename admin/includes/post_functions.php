@@ -228,9 +228,3 @@ function createPost($request_values)
 			exit(0);
 		}
 	}
-
-
-
-
-
-?>

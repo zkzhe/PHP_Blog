@@ -1,40 +1,42 @@
-<?php  include('../config.php'); ?>
-	<?php include(ROOT_PATH . '/admin/includes/admin_functions.php'); ?>
-	<?php include(ROOT_PATH . '/admin/includes/head_section.php'); ?>
-	<title>Admin | Dashboard</title>
+<?php include('../config.php'); ?>
+<?php include(ROOT_PATH . '/admin/includes/admin_functions.php'); ?>
+<?php include(ROOT_PATH . '/admin/includes/head_section.php'); ?>
+<title>Admin | Dashboard</title>
 </head>
 <style type="text/css">
-#DIV1{
-width:47%;　//DIV區塊寬度
-line-height:50px;　//DIV區塊高度
-padding:20px;　//DIV區塊內距，參閱：CSS padding 內距。
+	#DIV1 {
+		width: 47%;
+		line-height: 50px;
+		padding: 20px;
 
-margin-right:10px;　//靠右外距，參閱：CSS margin 邊界使用介紹範例教學。
-float:left;
-}
-#DIV2{
-	width:40%;　//DIV區塊寬度
-	line-height:50px;　//DIV區塊高度
-	padding:20px;　//DIV區塊內距，參閱：CSS padding 內距。
-margin:0px auto;
-	margin-right:10px;　//靠右外距，參閱：CSS margin 邊界使用介紹範例教學。
-	float:left;
+		margin-right: 10px;
+		float: left;
+	}
 
-}
+	#DIV2 {
+		width: 40%;
+		line-height: 50px;
+		padding: 20px;
+		margin: 0px auto;
+		margin-right: 10px;
+		float: left;
+
+	}
 </style>
+
 <body>
 	<div class="header">
 		<div id="DIV1" class="logo">
-			<a href="<?php echo BASE_URL .'admin/dashboard.php' ?>">
+			<a href="<?php echo BASE_URL . 'admin/dashboard.php' ?>">
 				<h1>LifeBlog - Admin</h1>
 			</a>
 		</div>
 		<div id="DIV2" class="logo">
-		<a href="<?php echo BASE_URL .'index.php' ?>">
-			<h1>Home</h1>
-		</a>
-	</div>
-		<?php if (isset($_SESSION['user'])): ?>
+			<a href="<?php echo BASE_URL . 'index.php' ?>">
+				<h1>Home</h1>
+			</a>
+		</div>
+		<?php if (isset($_SESSION['user'])) : ?>
 			<div class="user-info">
 				<span><?php echo $_SESSION['user']['username'] ?></span> &nbsp; &nbsp;
 				<a href="<?php echo BASE_URL . '/logout.php'; ?>" class="logout-btn">logout</a>
@@ -64,4 +66,5 @@ margin:0px auto;
 		</div>
 	</div>
 </body>
+
 </html>

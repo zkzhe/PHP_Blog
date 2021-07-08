@@ -125,6 +125,3 @@
 		// ['id'=>1 'username' => 'Awa', 'email'=>'a@a.com', 'password'=> 'mypass']
 		return $user;
 	}
-
-
-?>

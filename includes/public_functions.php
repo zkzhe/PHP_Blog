@@ -1,24 +1,25 @@
-<?php 
+<?php
 /* * * * * * * * * * * * * * *
 * Returns all published posts
 * 返回所有已發布的帖子
 * * * * * * * * * * * * * * */
-function getPublishedPosts() {
+function getPublishedPosts()
+{
 	// use global $conn object in function
-    // 在函數中使用全局$ conn對象
+	// 在函數中使用全局$ conn對象
 	global $conn;
-	$sql = "SELECT * FROM posts WHERE published=true";
+	$sql = "SELECT * FROM posts WHERE published = true";
 	$result = mysqli_query($conn, $sql);
 	// fetch all posts as an associative array called $posts
-    // 以名為$ posts的關聯數組的形式獲取所有帖子
+	// 以名為$ posts的關聯數組的形式獲取所有帖子
 	$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 	$final_posts = array();
 	foreach ($posts as $post) {
-		$post['topic'] = getPostTopic($post['id']); 
+		$post['topic'] = getPostTopic($post['id']);
 		array_push($final_posts, $post);
 	}
-    //print_r($final_posts); 
+	//print_r($final_posts); 
 	return $final_posts;
 }
 /* * * * * * * * * * * * * * *
@@ -26,10 +27,11 @@ function getPublishedPosts() {
 * Returns topic of the post
 * 收到帖子ID和返回帖子的主題
 * * * * * * * * * * * * * * */
-function getPostTopic($post_id){
+function getPostTopic($post_id)
+{
 	global $conn;
 	$sql = "SELECT * FROM topics WHERE id=
-			(SELECT topic_id FROM post_topic WHERE post_id=$post_id) LIMIT 1";
+			(SELECT topic_id FROM post_topic WHERE post_id = $post_id) LIMIT 1";
 	$result = mysqli_query($conn, $sql);
 	$topic = mysqli_fetch_assoc($result);
 	return $topic;
@@ -41,7 +43,8 @@ function getPostTopic($post_id){
 * Returns all posts under a topic
 * 返回主題下的所有帖子
 * * * * * * * * * * * * * * * * */
-function getPublishedPostsByTopic($topic_id) {
+function getPublishedPostsByTopic($topic_id)
+{
 	global $conn;
 	$sql = "SELECT * FROM posts ps 
 			WHERE ps.id IN 
@@ -54,7 +57,7 @@ function getPublishedPostsByTopic($topic_id) {
 
 	$final_posts = array();
 	foreach ($posts as $post) {
-		$post['topic'] = getPostTopic($post['id']); 
+		$post['topic'] = getPostTopic($post['id']);
 		array_push($final_posts, $post);
 	}
 	return $final_posts;
@@ -76,7 +79,8 @@ function getTopicNameById($id)
 * Returns a single post
 * 返回單個帖子
 * * * * * * * * * * * * * * */
-function getPost($slug){
+function getPost($slug)
+{
 	global $conn;
 	// Get single post slug
 	$post_slug = $_GET['post-slug'];
@@ -103,8 +107,3 @@ function getAllTopics()
 	$topics = mysqli_fetch_all($result, MYSQLI_ASSOC);
 	return $topics;
 }
-
-
-
-
-?>
